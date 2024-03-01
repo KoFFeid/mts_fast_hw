@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.configurations.database import get_async_session
 from src.models.books import Book
+from src.models.sellers import Seller
 from src.schemas import IncomingBook, ReturnedAllBooks, ReturnedBook
 
 books_router = APIRouter(tags=["books"], prefix="/books")
@@ -21,12 +22,21 @@ async def create_book(
     book: IncomingBook, session: DBSession
 ):  # прописываем модель валидирующую входные данные и сессию как зависимость.
     # это - бизнес логика. Обрабатываем данные, сохраняем, преобразуем и т.д.
+
+    res = await session.query(Seller).get(book.seller_id)
+
+    if not res:
+        return Response(status_code=400, )
+
+
     new_book = Book(
         title=book.title,
         author=book.author,
         year=book.year,
         count_pages=book.count_pages,
     )
+
+
     session.add(new_book)
     await session.flush()
 
