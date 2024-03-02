@@ -9,9 +9,9 @@ class Seller(BaseModel):
     __tablename__ = "sellers_table"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    first_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    last_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    password: Mapped[int] = mapped_column(String(50), nullable=False)
+    first_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(150), nullable=False)
+    password: Mapped[str] = mapped_column(String(250), nullable=False)
     email: Mapped[str]
-    books: Mapped[list[Book]] = relationship('Book', cascade='all, delete-orphan')
-    
+    books: Mapped[list[Book]] = relationship("Book",
+                                             lazy="selectin",  cascade="all, delete-orphan")

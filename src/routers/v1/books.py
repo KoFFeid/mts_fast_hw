@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
+from fastapi.responses import JSONResponse
 from icecream import ic
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,10 +24,11 @@ async def create_book(
 ):  # прописываем модель валидирующую входные данные и сессию как зависимость.
     # это - бизнес логика. Обрабатываем данные, сохраняем, преобразуем и т.д.
 
-    res = await session.query(Seller).get(book.seller_id)
+    res = await session.get(Seller, book.seller_id)
 
     if not res:
-        return Response(status_code=400, )
+        return JSONResponse(status_code=status.HTTP_418_IM_A_TEAPOT,
+                        content={"message": f"Seller with id={book.seller_id} does not exist"})
 
 
     new_book = Book(
@@ -34,6 +36,7 @@ async def create_book(
         author=book.author,
         year=book.year,
         count_pages=book.count_pages,
+        seller_id=book.seller_id
     )
 
 
@@ -81,7 +84,7 @@ async def update_book(book_id: int, new_data: ReturnedBook, session: DBSession):
         updated_book.title = new_data.title
         updated_book.year = new_data.year
         updated_book.count_pages = new_data.count_pages
-
+        updated_book.seller_id = new_data.seller_id
         await session.flush()
 
         return updated_book

@@ -1,11 +1,14 @@
 from pydantic import BaseModel, Field, field_validator
 from pydantic_core import PydanticCustomError
+from .books import ReturnedBook
 import re
 
 
 EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
-__all__ = ["IncomingBook", "ReturnedAllBooks", "ReturnedBook"]
+__all__ = ["AddedSeller", "ReturnedAllSellers",
+            "ReturnedSeller", "ReturnedSellerWithBooks",
+            "BaseSeller"]
 
 
 # Базовый класс "Продавцы", содержащий поля, которые есть во всех классах-наследниках.
@@ -32,9 +35,14 @@ class AddedSeller(BaseSeller):
 class ReturnedSeller(BaseSeller):
     id: int
 
+# Класс, возвращающий продавца со списком книг
+class ReturnedSellerWithBooks(BaseSeller):
+    id: int
+    books: list[ReturnedBook]
 
 
 
-# Класс для возврата массива объектов "Книга"
+
+# Класс для возврата списка продавцов"
 class ReturnedAllSellers(BaseModel):
-    books: list[ReturnedSeller]
+    sellers: list[ReturnedSeller]

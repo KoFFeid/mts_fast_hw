@@ -12,4 +12,4 @@ class Book(BaseModel):
     author: Mapped[str] = mapped_column(String(100), nullable=False)
     year: Mapped[int]
     count_pages: Mapped[int]
-    seller_id: Mapped[int] = mapped_column(ForeignKey('sellers_table.id', ondelete='CASCADE'), nullable=False)
+    seller_id: Mapped[int] = mapped_column(ForeignKey("sellers_table.id", ondelete="CASCADE"), nullable=False)
