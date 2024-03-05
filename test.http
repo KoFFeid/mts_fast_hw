@@ -35,7 +35,16 @@ GET http://localhost:8000/api/v1/seller/ HTTP/1.1
 ###
 
 # Получаем продавца со списком книг
-GET http://localhost:8000/api/v1/seller/1 HTTP/1.1
+GET http://localhost:8000/api/v1/seller/2 HTTP/1.1
+###
+
+# Получаем токен
+POST http://localhost:8000/api/v1/token/ HTTP/1.1
+content-type: application/json
+{
+    "email": "MK@yandex.ru",
+    "password": "maks1010"
+}
 
 ###
 

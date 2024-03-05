@@ -1,17 +1,28 @@
 from typing import Annotated
+import bcrypt
 
 from fastapi import APIRouter, Depends, Response, status
+from fastapi.security import OAuth2PasswordBearer
+
 from icecream import ic
+
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.configurations.database import get_async_session
+from src.utils import auth_utils
 from src.models.books import Book
 from src.models.sellers import Seller
 from src.schemas import ReturnedSeller, AddedSeller, ReturnedAllSellers, ReturnedSellerWithBooks
-import bcrypt
+from src.utils.auth_utils import verify_jwt_token
 
+
+
+reuseable_oauth = OAuth2PasswordBearer(
+    tokenUrl="/token",
+    scheme_name="JWT"
+)
 
 sellers_router = APIRouter(tags=["seller "], prefix="/seller")
 
@@ -26,13 +37,14 @@ async def add_seller(
 ):  # прописываем модель валидирующую входные данные и сессию как зависимость.
     # это - бизнес логика. Обрабатываем данные, сохраняем, преобразуем и т.д.
 
+    salt = seller.email
+
     new_seller = Seller(        
         first_name=seller.first_name,
         last_name=seller.last_name,
         email=seller.email,
-        password=bcrypt.hashpw(seller.password.encode('utf-8'),
-                                bcrypt.gensalt()).decode('utf8')
-        )
+        password=auth_utils.get_hashed_password(seller.password.encode('utf-8'))
+    )
     
     session.add(new_seller)
     await session.flush()
@@ -51,7 +63,10 @@ async def get_all_books(session: DBSession):
 
 # Ручка для получения продавца со списком книг
 @sellers_router.get("/{seller_id}", response_model=ReturnedSellerWithBooks)
-async def get_seller(seller_id: int, session: DBSession):
+async def get_seller(seller_id: int, session: DBSession, token: str = Depends(reuseable_oauth)):
+
+    payload = verify_jwt_token(token)
+
     res = await session.execute(
         select(Seller).where(Seller.id == seller_id).options(selectinload(Seller.books))
     )
