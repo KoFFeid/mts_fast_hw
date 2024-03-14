@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
+from fastapi.responses import JSONResponse
 
 from src.configurations.database import create_db_and_tables, delete_db_and_tables, global_init
 from src.routers import v1_router
@@ -25,7 +25,7 @@ def create_application():
         description="Учебное приложение для группы MTS Shad",
         version="0.0.1",
         responses={404: {"description": "Not Found!"}},
-        default_response_class=ORJSONResponse,  # Подключаем быстрый сериализатор,
+        default_response_class=JSONResponse,  # Подключаем быстрый сериализатор,
         lifespan=lifespan,
     )
 

@@ -4,15 +4,81 @@
 # Tunder Client не позволяет свободно импортировать-экспортировать записи,
 # поэтому перешел на этот плагин. Он тоже хорош :-)
 
+
+# Создаем продавца
+POST http://localhost:8000/api/v1/seller/ HTTP/1.1
+content-type: application/json
+
+{
+    "first_name": "Val2erii",
+    "last_name": "Push2kin",
+    "email": "VP@yandex.ru",
+    "password": "valerii1234"
+}
+
+
+POST http://localhost:8000/api/v1/seller/ HTTP/1.1
+content-type: application/json
+
+{
+    "first_name": "Maxim",
+    "last_name": "Kolotushkin",
+    "email": "MK@yandex.ru",
+    "password": "maks1010"
+}
+
+###
+
+# Получаем список продавцов
+GET http://localhost:8000/api/v1/seller/ HTTP/1.1
+
+###
+
+# Получаем продавца со списком книг
+GET http://localhost:8000/api/v1/seller/2 HTTP/1.1
+###
+
+# Получаем токен
+POST http://localhost:8000/api/v1/token/ HTTP/1.1
+content-type: application/json
+{
+    "email": "MK@yandex.ru",
+    "password": "maks1010"
+}
+
+###
+
+# Обновляем поля в данных о продавце
+PUT http://localhost:8000/api/v1/seller/1 HTTP/1.1
+content-type: application/json
+
+{
+    "first_name": "Maximilian",
+    "last_name": "Kolotushkin",
+    "email": "MK@yandex.ru",
+    "id":1
+}
+
+###
+
+# Удаляем продавца
+
+DELETE http://localhost:8000/api/v1/seller/3 HTTP/1.1
+content-type: application/json
+
+
+###
+
 # Создаем книгу
 POST http://localhost:8000/api/v1/books/ HTTP/1.1
 content-type: application/json
 
 {
-    "title": "Wrong Code",
-    "author": "Robert Martin",
+    "title": "Wro2ng Csode",
+    "author": "Rob2ert Msartin",
     "pages": 104,
-    "year": 2007
+    "year": 2007,
+    "seller_id": 1
 }
 
 ###
@@ -36,7 +102,8 @@ content-type: application/json
     "author": "Robert Martin",
     "count_pages": 10,
     "year": 2007,
-    "id": 0
+    "id": 0,
+    "seller_id":1
 }
 
 ###

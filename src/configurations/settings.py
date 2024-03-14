@@ -30,6 +30,13 @@ class Settings(BaseSettings):
     def database_test_url(self) -> str:
         return f"{self.db_host}/{self.db_test_name}"
 
+    # for token maker
+
+    token_secret_key: str
+    token_algorithm: str
+    access_token_expire_minutes: int 
+
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
